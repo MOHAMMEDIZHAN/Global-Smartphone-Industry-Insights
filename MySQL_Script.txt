@@ -1,0 +1,121 @@
+SELECT * FROM mobile_phones_2025 WHERE brand = "APPLE";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Samsung";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Oneplus";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Google";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Vivo";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Xiaomi";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Realme";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Oppo";
+SELECT * FROM mobile_phones_2025 WHERE brand = "Infinix";
+
+SELECT COUNT(DISTINCT(brand)) FROM mobile_phones_2025;
+
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "APPLE";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Samsung";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Oneplus";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Google";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Vivo";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Xiaomi";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Realme";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Oppo";
+SELECT DISTINCT(model) FROM mobile_phones_2025 WHERE brand = "Infinix";
+
+SELECT * FROM mobile_phones_2025 where year = 2025;
+
+-- Dropping year column since all the phone releases are of the year 2025
+ALTER TABLE mobile_phones_2025 DROP COLUMN year;
+
+SELECT * FROM mobile_phones_2025;
+
+SELECT * FROM mobile_phones_2025 WHERE release_month = "January";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "February";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "March";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "April";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "May";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "June";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "July";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "August";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "September";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "October";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "November";
+SELECT * FROM mobile_phones_2025 WHERE release_month = "December";
+
+SELECT brand, COUNT(*) AS num_models FROM mobile_phones_2025 GROUP BY brand ORDER BY num_models DESC;
+
+SELECT MIN(price_usd) as min_price, MAX(price_usd) as max_price, ROUND(AVG(price_usd), 2) as avg_price
+FROM mobile_phones_2025;
+
+SELECT brand, COUNT(*) AS num_models, AVG(price_usd) AS avg_price, MIN(price_usd) AS min_price,
+MAX(price_usd) AS max_price FROM mobile_phones_2025 GROUP BY brand ORDER BY avg_price DESC;
+
+SELECT 
+    CASE 
+        WHEN price_usd < 400 THEN 'Budget'
+        WHEN price_usd BETWEEN 400 AND 800 THEN 'Mid-range'
+        ELSE 'Flagship'
+    END AS price_segment,
+    COUNT(*) AS num_models,
+    ROUND(AVG(rating), 2) AS avg_rating
+FROM mobile_phones_2025
+GROUP BY price_segment
+ORDER BY num_models DESC;
+
+SELECT ram_gb, COUNT(*) AS num_models, ROUND(AVG(price_usd), 2) AS avg_price, 
+ROUND(AVG(rating), 2) AS avg_rating FROM mobile_phone_sales GROUP BY ram_gb ORDER BY ram_gb;
+
+SELECT storage_gb, COUNT(*) AS num_models, ROUND(AVG(price_usd), 2) AS avg_price 
+FROM mobile_phones_2025 GROUP BY storage_gb ORDER BY storage_gb;
+
+SELECT battery_mah, COUNT(*) AS num_models, ROUND(AVG(price_usd), 2) AS avg_price, 
+ROUND(AVG(rating), 2) AS avg_rating FROM mobile_phones_2025 GROUP BY battery_mah ORDER BY battery_mah;
+
+SELECT 5g_support, COUNT(*) AS num_models, AVG(price_usd) AS avg_price, AVG(rating) AS avg_rating
+FROM mobile_phones_2025 GROUP BY 5g_support;
+
+SELECT os, COUNT(*) AS num_models, AVG(price_usd) AS avg_price, AVG(rating) AS avg_rating
+FROM mobile_phones_2025 GROUP BY os ORDER BY num_models DESC;
+
+SELECT processor,
+    COUNT(*) AS num_models,
+    AVG(price_usd) AS avg_price,
+    AVG(rating) AS avg_rating
+FROM mobile_phones_2025
+GROUP BY processor
+-- HAVING COUNT(*) >= 2   -- optional: only processors with at least 2 models
+ORDER BY avg_rating DESC;
+
+SELECT brand, model, price_usd, ram_gb, storage_gb, battery_mah, rating FROM mobile_phone_sales
+WHERE price_usd <= 500 ORDER BY rating DESC, price_usd ASC LIMIT 10;
+
+SELECT brand, model, price_usd, battery_mah, rating FROM mobile_phones_2025 WHERE price_usd <= 400
+ORDER BY battery_mah DESC, rating DESC LIMIT 10;
+
+SELECT brand, model, price_usd, ram_gb, storage_gb, camera_mp, battery_mah, rating
+FROM mobile_phones_2025 ORDER BY rating DESC, price_usd ASC LIMIT 10;
+
+SELECT release_month, COUNT(*) AS num_models, AVG(price_usd) AS avg_price FROM mobile_phones_2025
+GROUP BY release_month ORDER BY num_models DESC;
+
+SELECT brand, COUNT(*) AS num_models, AVG(price_usd) AS avg_price FROM mobile_phones_2025
+WHERE release_month = 'March' GROUP BY brand ORDER BY num_models DESC;
+
+ALTER TABLE mobile_phones_2025 ADD COLUMN category VARCHAR(20);
+
+UPDATE mobile_phones_2025
+SET category = 
+    CASE 
+        WHEN price_usd < 300 THEN 'Budget'
+        WHEN price_usd BETWEEN 300 AND 700 THEN 'Mid-range'
+        ELSE 'Flagship'
+    END;
+
+ALTER TABLE mobile_phones_2025
+ADD COLUMN performance_score DECIMAL(10,2);
+
+SELECT * FROM mobile_phones_2025;
+
+UPDATE mobile_phones_2025
+SET performance_score = 
+    (( ( (ram_gb / 16.0) * (storage_gb / 512.0) * rating * 100 ) - 10.93 ) / (1000.0 - 10.93)) * 100;
+
+SELECT * FROM mobile_phones_2025;
